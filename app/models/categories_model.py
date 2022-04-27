@@ -6,7 +6,7 @@ from dataclasses import dataclass
 @dataclass
 class CategoriesModel(db.Model):
 
-    name : str
+    name: str
 
     __tablename__ = "categories"
 
