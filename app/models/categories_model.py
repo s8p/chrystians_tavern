@@ -2,6 +2,7 @@ from app.configs.database import db
 from sqlalchemy import Column, String
 from dataclasses import dataclass
 
+
 @dataclass
 class CategoriesModel(db.Model):
 
