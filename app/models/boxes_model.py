@@ -6,10 +6,10 @@ from dataclasses import dataclass
 @dataclass
 class BoxesModel(db.Model):
 
-    flag : str
-    name : str
-    description : str
-    monthly_price : int
+    flag: str
+    name: str
+    description: str
+    monthly_price: int
 
     __tablename__ = "boxes"
 
