@@ -4,14 +4,15 @@ from sqlalchemy import Column, Integer, DateTime
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class OrderModel(db.Model):
 
     data_atual = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
-    
-    id : int
-    date : str
-    price : int
+
+    id: int
+    date: str
+    price: int
 
     __tablename__ = "orders"
 
