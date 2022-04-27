@@ -1,4 +1,3 @@
-
 from app.configs.database import db
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, backref
@@ -10,15 +9,14 @@ from app.models.categories_model import CategoriesModel
 @dataclass
 class ProductModel(db.Model):
 
-    id : int
-    name : str
-    price : int
-    available_amount : int
-    flag : BoxesModel
-    category : CategoriesModel
+    id: int
+    name: str
+    price: int
+    available_amount: int
+    flag: BoxesModel
+    category: CategoriesModel
 
     __tablename__ = "products"
-
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
@@ -27,6 +25,6 @@ class ProductModel(db.Model):
     flag = Column(String, ForeignKey("box.flag"))
     category = Column(String, ForeignKey("categories.name"))
     flagId = relationship("BoxesModel", backref=backref("flag", uselist=False))
-    categoryName= relationship("CategoriesModel",backref=backref("category", uselist=False))
-
-
+    categoryName = relationship(
+        "CategoriesModel", backref=backref("category", uselist=False)
+    )
