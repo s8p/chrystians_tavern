@@ -1,5 +1,4 @@
 from flask import Flask
-
 from app.configs import database, migration
 
 
