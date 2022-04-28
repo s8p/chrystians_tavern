@@ -4,15 +4,17 @@ from sqlalchemy.orm import relationship, backref, validates
 from dataclasses import dataclass
 from app.models.exc import CpfInvalid
 from app.models.boxes_model import BoxesModel
+
+
 @dataclass
 class ClientsModel(db.Model):
-   
-    id : int
-    cpf : str
-    name : str
-    email : str
-    total_points : int
-    box : BoxesModel
+
+    id: int
+    cpf: str
+    name: str
+    email: str
+    total_points: int
+    box: BoxesModel
 
     __tablename__ = "clients"
 
@@ -27,7 +29,7 @@ class ClientsModel(db.Model):
     @validates("cpf")
     def validate_cpf(self, key, cpf):
         key = key.replace(".", "")
-        key = key.replace("-","")
+        key = key.replace("-", "")
 
         if key.isnumeric() == False and len(key) != 11:
             raise CpfInvalid
