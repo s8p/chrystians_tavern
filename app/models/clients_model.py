@@ -2,7 +2,7 @@ from app.configs.database import db
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, backref, validates
 from dataclasses import dataclass
-from app.models.exc import CpfInvalid
+from app.exceptions.client_exc import CpfInvalid
 from app.models.boxes_model import BoxesModel
 
 
