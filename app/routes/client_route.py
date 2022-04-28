@@ -1,7 +1,7 @@
 from flask import Blueprint
 from app.controllers import clients_controller
 
-bp = Blueprint("clients",__name__,url_prefix="/clients")
+bp = Blueprint("clients", __name__, url_prefix="/clients")
 
 bp.get("")(clients_controller.retrieve_clients)
 bp.post("")(clients_controller.create_client)
