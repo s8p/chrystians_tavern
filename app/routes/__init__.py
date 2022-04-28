@@ -1,7 +1,7 @@
 from flask import Blueprint
-from product_route import bp as bp_product
-from client_route import bp as bp_client
-from boxes_route import bp as bp_box
+from .product_route import bp as bp_product
+from .client_route import bp as bp_client
+from .boxes_route import bp as bp_box
 
 bp_api = Blueprint("api", __name__)
 
