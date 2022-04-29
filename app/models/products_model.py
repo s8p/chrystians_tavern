@@ -22,7 +22,7 @@ class ProductModel(db.Model):
     name = Column(String, nullable=False, unique=True)
     price = Column(Integer, nullable=False)
     available_amount = Column(Integer, nullable=False, default=0)
-    flag = Column(String, ForeignKey("box.flag"))
+    flag = Column(String, ForeignKey("boxes.flag"))
     category = Column(String, ForeignKey("categories.name"))
     flagId = relationship("BoxesModel", backref=backref("flag", uselist=False))
     categoryName = relationship(
