@@ -1,9 +1,6 @@
 from app.configs.database import db
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship, backref
 from dataclasses import dataclass
-from app.models.boxes_model import BoxesModel
-from app.models.categories_model import CategoriesModel
 
 
 @dataclass
@@ -13,8 +10,8 @@ class ProductModel(db.Model):
     name: str
     price: int
     available_amount: int
-    flag: BoxesModel
-    category: CategoriesModel
+    flag: str
+    category: str
 
     __tablename__ = "products"
 
@@ -24,7 +21,3 @@ class ProductModel(db.Model):
     available_amount = Column(Integer, nullable=False, default=0)
     flag = Column(String, ForeignKey("boxes.flag"))
     category = Column(String, ForeignKey("categories.name"))
-    flagId = relationship("BoxesModel", backref=backref("flag", uselist=False))
-    categoryName = relationship(
-        "CategoriesModel", backref=backref("category", uselist=False)
-    )

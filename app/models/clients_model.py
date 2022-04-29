@@ -1,9 +1,8 @@
 from app.configs.database import db
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship, backref, validates
+from sqlalchemy.orm import validates
 from dataclasses import dataclass
 from app.exceptions.client_exc import CpfInvalid
-from app.models.boxes_model import BoxesModel
 
 
 @dataclass
@@ -14,7 +13,7 @@ class ClientsModel(db.Model):
     name: str
     email: str
     total_points: int
-    box: BoxesModel
+    box_flag: str
 
     __tablename__ = "clients"
 
@@ -24,13 +23,18 @@ class ClientsModel(db.Model):
     email = Column(String, nullable=False, unique=True)
     total_points = Column(Integer)
     box_flag = Column(String, ForeignKey("boxes.flag"))
-    box = relationship("BoxesModel", backref=backref("client", uselist=False))
 
     @validates("cpf")
     def validate_cpf(self, key, cpf):
-        key = key.replace(".", "")
-        key = key.replace("-", "")
+        cpf = cpf.replace(".", "")
+        cpf = cpf.replace("-", "")
 
-        if key.isnumeric() == False and len(key) != 11:
+        print("teste aqui dentro oia")
+        print(f"{cpf.isnumeric()=}")
+        print(f"{len(cpf)=}")
+        print(f"{cpf}")
+
+        if cpf.isnumeric() == False or len(cpf) != 11:
             raise CpfInvalid
-        return key
+
+        return cpf
