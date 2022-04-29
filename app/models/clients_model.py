@@ -23,19 +23,18 @@ class ClientsModel(db.Model):
     email = Column(String, nullable=False, unique=True)
     total_points = Column(Integer)
     box_flag = Column(String, ForeignKey("boxes.flag"))
-    
 
-    @validates('cpf')
+    @validates("cpf")
     def validate_cpf(self, key, cpf):
         cpf = cpf.replace(".", "")
         cpf = cpf.replace("-", "")
 
-        print('teste aqui dentro oia')
-        print(f'{cpf.isnumeric()=}')
-        print(f'{len(cpf)=}')
-        print(f'{cpf}')
+        print("teste aqui dentro oia")
+        print(f"{cpf.isnumeric()=}")
+        print(f"{len(cpf)=}")
+        print(f"{cpf}")
 
         if cpf.isnumeric() == False or len(cpf) != 11:
             raise CpfInvalid
-            
+
         return cpf

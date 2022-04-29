@@ -20,4 +20,3 @@ class ProductOrderModel(db.Model):
     product_id = Column(Integer, ForeignKey("products.id"))
     order_id = Column(Integer, ForeignKey("orders.id"))
     amount = Column(Integer, default=1)
-    

@@ -21,4 +21,3 @@ class ProductModel(db.Model):
     available_amount = Column(Integer, nullable=False, default=0)
     flag = Column(String, ForeignKey("boxes.flag"))
     category = Column(String, ForeignKey("categories.name"))
-    
