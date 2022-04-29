@@ -7,6 +7,9 @@ from sqlalchemy.orm.session import Session
 from app.configs.database import db
 from werkzeug.exceptions import NotFound
 import locale
+import random
+
+from app.models.products_model import ProductModel
 
 locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
@@ -35,13 +38,13 @@ def get_all_boxes():
     return adapted_boxes
 
 
-def delelete_by_flag(box_flag):
+def delete_by_flag(box_flag):
     session: Session = db.session
 
     box = session.query(BoxesModel).get(box_flag)
 
     if not box:
-        return {"error": "id not found"}, HTTPStatus.NOT_FOUND
+        return {"error": "flag not found"}, HTTPStatus.NOT_FOUND
 
     session.delete(box)
     session.commit()
@@ -50,14 +53,21 @@ def delelete_by_flag(box_flag):
 
 def get_one_box(box_flag):
     base_query: Query = db.session.query(BoxesModel)
-
     box_query: BaseQuery = base_query.filter_by(flag=box_flag)
     try:
         box = box_query.first_or_404(description="flag not found")
+        products = db.session.query(ProductModel).filter_by(flag=box_flag).all()
+        random_products = []
+        if len(products)>3:
+            for _ in range(3):
+                random_number = round(random.random()*(len(products)-1))
+                random_products.append(products.pop(random_number))
+        else:
+            random_products = products
+        setattr(box,"sorted_products",random_products)
+        return jsonify(box), HTTPStatus.OK
     except NotFound as e:
         return {"error": e.description}, HTTPStatus.NOT_FOUND
-
-    return jsonify(box), HTTPStatus.OK
 
 
 def update_by_flag(box_flag):
@@ -69,7 +79,7 @@ def update_by_flag(box_flag):
     box = session.query(BoxesModel).get(box_flag)
 
     if not box:
-        return {"error": "id not found"}, HTTPStatus.NOT_FOUND
+        return {"error": "flag not found"}, HTTPStatus.NOT_FOUND
 
     for key, value in data.items():
         setattr(box, key, value)

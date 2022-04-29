@@ -12,8 +12,8 @@ def retrieve_boxes():
     return (jsonify(boxes_services.get_all_boxes()), HTTPStatus.OK)
 
 
-def retrieve_box_flag():
-    return boxes_services.get_one_box()
+def retrieve_box_flag(box_flag: str):
+    return boxes_services.get_one_box(box_flag)
 
 
 def update_box():
@@ -21,4 +21,4 @@ def update_box():
 
 
 def delete_box(box_flag: str):
-    return boxes_services.delelete_by_flag(box_flag)
+    return boxes_services.delete_by_flag(box_flag)
