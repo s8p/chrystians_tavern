@@ -13,7 +13,7 @@ def retrieve_boxes():
 
 
 def retrieve_box_flag():
-    ...
+    return boxes_services.get_one_box()
 
 
 def update_box():
