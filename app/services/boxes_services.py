@@ -58,13 +58,13 @@ def get_one_box(box_flag):
         box = box_query.first_or_404(description="flag not found")
         products = db.session.query(ProductModel).filter_by(flag=box_flag).all()
         random_products = []
-        if len(products)>3:
+        if len(products) > 3:
             for _ in range(3):
-                random_number = round(random.random()*(len(products)-1))
+                random_number = round(random.random() * (len(products) - 1))
                 random_products.append(products.pop(random_number))
         else:
             random_products = products
-        setattr(box,"sorted_products",random_products)
+        setattr(box, "sorted_products", random_products)
         return jsonify(box), HTTPStatus.OK
     except NotFound as e:
         return {"error": e.description}, HTTPStatus.NOT_FOUND
