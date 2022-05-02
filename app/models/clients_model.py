@@ -27,7 +27,7 @@ class ClientsModel(db.Model):
     @validates("cpf")
     def validate_cpf(self, key, cpf):
         cpf = str(cpf)
-        
+
         cpf = cpf.replace(".", "")
         cpf = cpf.replace("-", "")
 

@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from app.exceptions.client_exc import WrongKeys
 
 from app.models import ClientsModel
-from app.configs.database import db 
+from app.configs.database import db
 from app.services.clients_services import checking_keys
 
 
@@ -28,16 +28,18 @@ def create_client():
         session.add(client)
         session.commit()
 
-    except IntegrityError as i :
+    except IntegrityError as i:
 
         if isinstance(i.orig, UniqueViolation):
-            return {'error': 'Cliente já registrado!'}, HTTPStatus.CONFLICT
+            return {"error": "Cliente já registrado!"}, HTTPStatus.CONFLICT
 
         else:
             raise i.orig
 
     except WrongKeys:
-        return {'error': "Confira as chaves usadas. Chaves esperadas: ['cpf', 'name', 'email', 'box_flag', 'total_points']"}, HTTPStatus.BAD_REQUEST
+        return {
+            "error": "Confira as chaves usadas. Chaves esperadas: ['cpf', 'name', 'email', 'box_flag', 'total_points']"
+        }, HTTPStatus.BAD_REQUEST
 
     return jsonify(client), HTTPStatus.CREATED
 
