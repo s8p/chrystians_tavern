@@ -21,5 +21,5 @@ class ProductOrderModel(db.Model):
     product_id = Column(Integer, ForeignKey("products.id"))
     order_id = Column(Integer, ForeignKey("orders.id"))
     amount = Column(Integer, default=1)
-    productId = relationship("ProdutModel", backref=backref("product", uselist=False))
-    orderId = relationship("OrderModel", backref=backref("order", uselist=False))
+    productId = relationship("ProdutModel", backref=backref)
+    orderId = relationship("OrderModel", backref=backref)

@@ -24,7 +24,7 @@ class ClientsModel(db.Model):
     email = Column(String, nullable=False, unique=True)
     total_points = Column(Integer)
     box_flag = Column(String, ForeignKey("boxes.flag"))
-    box = relationship("BoxesModel", backref=backref("client", uselist=False))
+    box = relationship("BoxesModel", backref=backref)
 
     @validates("cpf")
     def validate_cpf(self, key, cpf):

@@ -24,7 +24,6 @@ class ProductModel(db.Model):
     available_amount = Column(Integer, nullable=False, default=0)
     flag = Column(String, ForeignKey("boxes.flag"))
     category = Column(String, ForeignKey("categories.name"))
-    flagId = relationship("BoxesModel", backref=backref("flag", uselist=False))
-    categoryName = relationship(
-        "CategoriesModel", backref=backref("category", uselist=False)
-    )
+    flagId = relationship("BoxesModel", backref=backref)
+    categoryName = relationship("CategoriesModel", backref=backref)
+    

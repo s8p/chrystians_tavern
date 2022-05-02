@@ -18,5 +18,5 @@ class ClientOrderModel(db.Model):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
     client_id = Column(Integer, ForeignKey("clients.id"))
-    orderId = relationship("OrderModel", backref=backref("order", uselist=False))
-    clientId = relationship("ClientsModel", backref=backref("client", uselist=False))
+    orderId = relationship("OrderModel", backref=backref)
+    clientId = relationship("ClientsModel", backref=backref)
