@@ -35,4 +35,3 @@ def checking_id(id: int):
         raise IdNotFound
 
     return client
-
