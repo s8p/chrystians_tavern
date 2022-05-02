@@ -8,7 +8,7 @@ from app.exceptions.client_exc import WrongKeys
 
 from app.models import ClientsModel
 from app.configs.database import db
-from app.services.clients_services import checking_keys
+from app.services.clients_services import checking_id, checking_keys
 
 
 def retrieve_clients():
@@ -56,5 +56,13 @@ def delete_client():
     ...
 
 
-def create_checkout():
-    ...
+def create_checkout(client_id: int):
+    print('-'*100)
+
+    # print(client_id)
+
+    client = checking_id(client_id)
+    print(client)
+
+    print('-'*100)
+    return {'msg': 'create checkout'}, HTTPStatus.OK
