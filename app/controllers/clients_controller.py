@@ -12,7 +12,7 @@ from app.services.clients_services import checking_keys
 
 
 def retrieve_clients():
-    ...
+    return jsonify([client for client in ClientsModel.query.all()])
 
 
 def create_client():
