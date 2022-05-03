@@ -9,6 +9,9 @@ from sqlalchemy.orm import Query
 from flask_sqlalchemy import BaseQuery
 from werkzeug.exceptions import NotFound
 from sqlalchemy.orm.session import Session
+import locale
+
+# locale.setlocale(locale.LC_ALL, "Portuguese_Brazil.1252")
 
 
 def create_box():
@@ -30,7 +33,7 @@ def retrieve_boxes():
     for boxe in boxes:
         adapted_box = dict(**boxe.__dict__)
         adapted_box.pop("_sa_instance_state")
-        adapted_box.update({"monthly_price": boxe.monthly_price})
+        adapted_box.update({"monthly_price": locale.currency(boxe.monthly_price)})
         adapted_boxes.append(adapted_box)
     return jsonify(adapted_boxes), HTTPStatus.OK
 
@@ -56,7 +59,17 @@ def retrieve_box_flag(box_flag: str):
 
 def update_box(box_flag: str):
     data = request.get_json()
-    data.pop("flag")
+
+    check = ["name", "description", "monthly_price"]
+    data_keys = data.keys()
+
+    extra_keys = [key for key in data_keys if key not in check]
+
+    if len(extra_keys) > 0:
+        return {
+            "error": "Invalid keys",
+            "invalid_keys": extra_keys,
+        }, HTTPStatus.BAD_REQUEST
 
     session: Session = db.session
 
