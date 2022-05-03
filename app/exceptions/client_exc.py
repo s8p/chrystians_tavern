@@ -6,5 +6,17 @@ class WrongKeys(Exception):
     ...
 
 
-class IdNotFound(Exception):
+class ClientNotFound(Exception):
+    ...
+
+
+class UnavailableProduct(Exception):
+    ...
+
+
+class DuplicateProduct(Exception):
+    ...
+
+
+class ProductNotFound(Exception):
     ...
