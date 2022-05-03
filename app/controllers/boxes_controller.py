@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from random import random
 from flask import jsonify, request
 from app.models.boxes_model import BoxesModel
 from app.models.products_model import ProductModel
@@ -8,10 +9,6 @@ from sqlalchemy.orm import Query
 from flask_sqlalchemy import BaseQuery
 from werkzeug.exceptions import NotFound
 from sqlalchemy.orm.session import Session
-import locale
-
-
-locale.setlocale(locale.LC_MONETARY, "pt_BR.UTF-8")
 
 
 def create_box():
@@ -33,7 +30,7 @@ def retrieve_boxes():
     for boxe in boxes:
         adapted_box = dict(**boxe.__dict__)
         adapted_box.pop("_sa_instance_state")
-        adapted_box.update({"monthly_price": locale.currency(boxe.monthly_price)})
+        adapted_box.update({"monthly_price": boxe.monthly_price})
         adapted_boxes.append(adapted_box)
     return jsonify(adapted_boxes), HTTPStatus.OK
 
