@@ -1,4 +1,8 @@
-from app.exceptions.client_exc import WrongKeys
+from sqlalchemy.orm.session import Session
+
+from app.exceptions.client_exc import IdNotFound, WrongKeys
+from app.configs.database import db
+from app.models import ClientsModel
 
 
 def checking_keys(data: dict):
@@ -20,3 +24,14 @@ def checking_keys(data: dict):
         raise WrongKeys
 
     return data
+
+
+def checking_id(id: int):
+    session: Session = db.session
+
+    client = session.query(ClientsModel).get(id)
+
+    if not client:
+        raise IdNotFound
+
+    return client
