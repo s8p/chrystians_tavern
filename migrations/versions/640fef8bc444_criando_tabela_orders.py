@@ -1,8 +1,8 @@
 """criando tabela orders
 
-Revision ID: 6079fbba8754
-Revises: 1e2a882777ba
-Create Date: 2022-04-28 17:23:23.213860
+Revision ID: 640fef8bc444
+Revises: 9881371e0ab2
+Create Date: 2022-04-29 17:18:07.684537
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "6079fbba8754"
-down_revision = "1e2a882777ba"
+revision = "640fef8bc444"
+down_revision = "9881371e0ab2"
 branch_labels = None
 depends_on = None
 
