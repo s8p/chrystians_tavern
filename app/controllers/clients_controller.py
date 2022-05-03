@@ -12,7 +12,16 @@ from app.services.clients_services import checking_id, checking_keys
 
 
 def retrieve_clients():
-    ...
+    if request.mimetype != "application/json":
+        return jsonify([client for client in ClientsModel.query.all()])
+    data = request.get_json()
+    email = data.get("email")
+    client = (
+        db.session().query(ClientsModel).filter(ClientsModel.email == email).first()
+    )
+    if client:
+        return jsonify(client)
+    return {"error": "Not Found"}, 404
 
 
 def create_client():
