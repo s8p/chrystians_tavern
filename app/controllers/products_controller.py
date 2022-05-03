@@ -1,7 +1,12 @@
 from http import HTTPStatus
-from flask import  jsonify, current_app, request
+from flask import jsonify, current_app, request
 from app.models import ProductModel, CategoriesModel
-from app.services.products_services import get_product, post_product, verify_products, check_category
+from app.services.products_services import (
+    get_product,
+    post_product,
+    verify_products,
+    check_category,
+)
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from app.exceptions.product_exc import ProductNotFound
@@ -18,11 +23,11 @@ def create_product():
         produto = post_product(data)
         current_app.db.session.add(produto)
         current_app.db.session.commit()
-        
+
     except IntegrityError as i:
-        if isinstance(i.orig,UniqueViolation):
-            return {'error':'product already registered.'}, HTTPStatus.CONFLICT
-        else: 
+        if isinstance(i.orig, UniqueViolation):
+            return {"error": "product already registered."}, HTTPStatus.CONFLICT
+        else:
             raise i.orig
     # except UnmappedInstanceError:
     #     return jsonify({'error':'Invalid format.'})
@@ -32,13 +37,9 @@ def create_product():
     return jsonify(produto), HTTPStatus.CREATED
 
 
-
-
 def retrieve_products():
     product = get_product()
     return jsonify(product), HTTPStatus.OK
-
-
 
 
 def product_by_id(product_id):
@@ -48,33 +49,33 @@ def product_by_id(product_id):
         return {"error": f"Product {product_id} not found"}, HTTPStatus.NOT_FOUND
     return jsonify(produto), HTTPStatus.OK
 
+
 def update_product(product_id):
 
     data = request.get_json()
 
-    check = ["name", "price","category","available_amount"]
+    check = ["name", "price", "category", "available_amount"]
     data_keys = data.keys()
     extra_product = [key for key in data_keys if key not in check]
-    
-    if  len(data)==0:
-        return {
-            "error":"Invalid keys",
-            "invalid_keys":extra_product,
-        }, HTTPStatus.BAD_REQUEST
 
+    if len(data) == 0:
+        return {
+            "error": "Invalid keys",
+            "invalid_keys": extra_product,
+        }, HTTPStatus.BAD_REQUEST
 
     if len(extra_product) > 0:
         return {
-            "error":"Invalid keys",
-            "invalid_keys":extra_product,
+            "error": "Invalid keys",
+            "invalid_keys": extra_product,
         }, HTTPStatus.BAD_REQUEST
 
-    session : Session = db.session
+    session: Session = db.session
     produto = session.query(ProductModel).get(product_id)
     if type(data["category"]) and type(data["name"]) != str:
-        return jsonify({'error':'Unexpected shape.'})
+        return jsonify({"error": "Unexpected shape."})
     if type(data["price"]) and type(data["available_amount"]) != int:
-        return jsonify({'error':'Unexpected shape'})
+        return jsonify({"error": "Unexpected shape"})
     if not produto:
         return {"error": f"Product {product_id} not found"}, HTTPStatus.NOT_FOUND
 
@@ -82,7 +83,7 @@ def update_product(product_id):
         setattr(produto, key, value)
 
     session.commit()
-    return jsonify(produto),HTTPStatus.OK
+    return jsonify(produto), HTTPStatus.OK
 
 
 def delete_product(product_id):
