@@ -10,20 +10,14 @@ def create_product():
     return jsonify(produto), HTTPStatus.CREATED
 
 
-
-
 def retrieve_products():
     product = get_product()
     return jsonify(product), HTTPStatus.OK
 
 
-
-
 def product_by_id(product_id):
     produto = verify_products(product_id)
     return jsonify(produto), HTTPStatus.OK
-        
-
 
 
 # def update_product(product_id):
@@ -34,16 +28,10 @@ def product_by_id(product_id):
 #     current_app.db.session.commit()
 
 #     return {'atualizado':product_new}, HTTPStatus.CREATED
-      
 
-      
 
 def delete_product(product_id):
     produto = verify_products(product_id)
     current_app.db.session.delete(produto)
     current_app.db.session.commit()
     return "", HTTPStatus.NO_CONTENT
-
-
-
-
