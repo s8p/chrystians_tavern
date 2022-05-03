@@ -63,27 +63,29 @@ def update_box(box_flag: str):
 
     session: Session = db.session
 
-    box = session.query(BoxesModel).get(box_flag)
+    try:
+        box = session.query(BoxesModel).get(box_flag)
+        for key, value in data.items():
+            setattr(box, key, value)
 
-    if not box:
-        return {"error": "flag not found"}, HTTPStatus.NOT_FOUND
+        session.commit()
 
-    for key, value in data.items():
-        setattr(box, key, value)
+        return jsonify(box), HTTPStatus.OK
 
-    session.commit()
-
-    return jsonify(box), HTTPStatus.OK
+    except NotFound as e:
+        return {"error": e.description}, HTTPStatus.NOT_FOUND
 
 
 def delete_box(box_flag: str):
     session: Session = db.session
 
-    box = session.query(BoxesModel).get(box_flag)
+    try:
 
-    if not box:
-        return {"error": "flag not found"}, HTTPStatus.NOT_FOUND
+        box = session.query(BoxesModel).get(box_flag)
+        session.delete(box)
+        session.commit()
 
-    session.delete(box)
-    session.commit()
-    return "", HTTPStatus.NO_CONTENT
+        return "", HTTPStatus.NO_CONTENT
+
+    except NotFound as e:
+        return {"error": e.description}, HTTPStatus.NOT_FOUND
