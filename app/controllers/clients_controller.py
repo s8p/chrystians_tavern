@@ -31,12 +31,14 @@ def retrieve_clients():
         return jsonify([client for client in ClientsModel.query.all()])
     data = request.get_json()
     email = data.get("email")
+    if email is None:
+        return {"error": "Email necessário"}
     client = (
         db.session().query(ClientsModel).filter(ClientsModel.email == email).first()
     )
     if client:
         return jsonify(client)
-    return {"error": "Not Found"}, 404
+    return {"error": "Email não encontrado"}, 404
 
 
 def create_client():
