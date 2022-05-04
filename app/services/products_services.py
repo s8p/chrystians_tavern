@@ -7,8 +7,22 @@ from sqlalchemy.orm.session import Session
 
 def verify_data(data: dict):
     data_keys = set(data.keys())
+    price_key = data['price'] 
 
-    default_keys = set(["name", "price", "category", "flag", "available_amount"])
+
+    if (price_key <= 25000):
+        data['flag'] = 'bronze'
+        # bronze
+    
+    elif(price_key >25000 and price_key <= 50000):
+        data['flag'] = 'silver'
+        # silver
+    
+    elif(price_key > 50000):
+        data['flag'] = 'gold'
+    # gold
+    
+    default_keys = set(["name", "price", "category",  "available_amount"])
 
     if data_keys != default_keys:
         raise WrongKeys
