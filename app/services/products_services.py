@@ -1,37 +1,52 @@
-from flask import current_app, request, jsonify
-from app.exceptions.product_exc import ProductNotFound
+from app.configs.database import db
 from app.models import ProductModel, CategoriesModel
+from app.exceptions.product_exc import ProductNotFound, InvalidValues, WrongKeys
+
+from sqlalchemy.orm.session import Session
 
 
-def post_product(data):
+def verify_data(data: dict):
+    data_keys = set(data.keys())
+    
+    default_keys = set(['name', 'price', 'category', 'flag', 'available_amount'])
 
-    if type(data["category"]) and type(data["name"]) != str:
-        return jsonify({"error": "Unexpected shape"})
-    if type(data["price"]) and type(data["available_amount"]) != int:
-        return jsonify({"error": "Unexpected shape"})
-    products = ProductModel(**data)
-    return products
+    if data_keys != default_keys:
+        raise WrongKeys
 
+    data['category'] = data['category'].capitalize() 
 
-def get_product():
-    data = ProductModel.query.all()
-    serializer = [
-        {
-            "id": data.id,
-            "name": data.name,
-            "price": data.price,
-            "category": data.category,
-            "available_amount": data.available_amount,
-            "flag": data.flag,
-        }
-        for data in data
-    ]
-    return serializer
+    if type(data["category"]) != str or type(data["name"]) != str:
+        raise InvalidValues
+        
+
+    if type(data["price"]) != int or type(data["available_amount"]) != int:
+        raise InvalidValues
+
+    return data
 
 
-def verify_products(product_id):
-    current_app.db.session()
-    product = ProductModel.query.get(product_id)
+def check_category(data: dict):
+    session: Session = db.session
+    
+    category_name = data['category']
+
+
+    category = CategoriesModel.query.get(category_name)
+
+    if not category:
+        category_data = {'name': category_name}
+
+        category = CategoriesModel(**category_data)
+
+        session.add(category)
+        session.commit()
+
+
+
+def verify_product(product_id: int):
+    session: Session = db.session
+
+    product = session.query(ProductModel).get(product_id)
 
     if not product:
         raise ProductNotFound
@@ -39,12 +54,26 @@ def verify_products(product_id):
     return product
 
 
-def check_category(data):
-    current_app.db.session()
-    category = CategoriesModel.query.get(data["category"])
-    if not category:
-        category_data = {"name": data["category"]}
-        current_app.db.session.add(category_data)
-        current_app.db.session.commit()
-    print(data)
-    print(category)
+def check_keys(data: dict):
+    category = data.get('category')
+    
+    if category:
+        data['category'] = data['category'].capitalize() 
+
+    default_keys = ["name", "price", "category", "available_amount"]
+
+    data_keys = list(data.keys())
+
+    for key in data_keys:
+        if key not in default_keys:
+            raise WrongKeys
+
+        if key == 'category' or key == 'name':
+            if type(data[key]) != str:
+                raise InvalidValues
+
+        elif key == 'price' or key == 'available_amount':
+            if type(data[key]) != int:
+                raise InvalidValues
+
+    return data
