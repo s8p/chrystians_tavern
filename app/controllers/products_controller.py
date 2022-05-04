@@ -5,7 +5,7 @@ from app.services.products_services import (
     check_keys,
     verify_product,
     check_category,
-    verify_data
+    verify_data,
 )
 
 from sqlalchemy.exc import IntegrityError
@@ -25,7 +25,6 @@ def create_product():
 
         product = ProductModel(**data)
 
-
         session: Session = db.session
 
         session.add(product)
@@ -38,9 +37,9 @@ def create_product():
 
         else:
             raise i.orig
-    
+
     except WrongKeys:
-        return {'error':'Chaves erradas'}, HTTPStatus.BAD_REQUEST
+        return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
 
     except InvalidValues:
         return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST
@@ -57,7 +56,7 @@ def retrieve_products():
 def product_by_id(product_id: int):
     try:
         produto = verify_product(product_id)
-    
+
     except ProductNotFound:
         return {"error": "Produto não encontrado"}, HTTPStatus.NOT_FOUND
 
@@ -74,15 +73,13 @@ def update_product(product_id: int):
         check_category(data)
 
         session: Session = db.session
-        
 
         for key, value in data.items():
             setattr(product, key, value)
-        
-        session.commit()
-        
-        return jsonify(product), HTTPStatus.OK
 
+        session.commit()
+
+        return jsonify(product), HTTPStatus.OK
 
     except ProductNotFound:
         return {"error": "Produto não encontrado"}, HTTPStatus.NOT_FOUND
@@ -91,7 +88,7 @@ def update_product(product_id: int):
         return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST
 
     except WrongKeys:
-        return {'error':'Chaves erradas'}, HTTPStatus.BAD_REQUEST
+        return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
 
     except IntegrityError as i:
 
@@ -100,7 +97,6 @@ def update_product(product_id: int):
 
         else:
             raise i.orig
-
 
 
 def delete_product(product_id: int):
