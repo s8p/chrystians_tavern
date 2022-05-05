@@ -78,8 +78,15 @@ def update_client():
     ...
 
 
-def delete_client():
-    ...
+def delete_client(client_id):
+    session: Session = db.session
+    try:
+        client = checking_id(client_id)
+        session.delete(client)
+        session.commit()
+        return "", HTTPStatus.NO_CONTENT
+    except ClientNotFound:
+        return {"error": "Cliente não encontrado"}
 
 
 def create_checkout(client_id: int):
