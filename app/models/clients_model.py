@@ -25,13 +25,28 @@ class ClientsModel(db.Model):
     box_flag = Column(String, ForeignKey("boxes.flag"))
 
     @validates("cpf")
-    def validate_cpf(self, key, cpf):
+    def validate_cpf(self, _, cpf):
         cpf = str(cpf)
 
         cpf = cpf.replace(".", "")
         cpf = cpf.replace("-", "")
 
-        if cpf.isnumeric() == False or len(cpf) != 11:
+        if not cpf.isnumeric() or len(cpf) != 11:
             raise CpfInvalid
 
         return cpf
+
+    @validates("name", "email")
+    def validates_name_email(self, key, value):
+        if value is None or not isinstance(value, str):
+            raise TypeError
+        if key == "name":
+            return value.title()
+        return value.lower()
+
+    @validates("box_flag")
+    def validate_box_flag(self, _, box_flag):
+        if box_flag is not None:
+            if not isinstance(box_flag, str):
+                return TypeError
+            return box_flag.capitalize()
