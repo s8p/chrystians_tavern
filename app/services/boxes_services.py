@@ -2,7 +2,7 @@ from app.configs.database import db
 from sqlalchemy.orm.session import Session
 
 from app.models import BoxesModel, ProductModel
-from app.exceptions.product_exc import WrongKeys, InvalidValues, BoxNotFound
+from app.exceptions.box_exc import WrongKeys, InvalidValues, BoxNotFound
 
 import random
 
@@ -54,10 +54,10 @@ def random_products(box_flag: str):
     if len(products) > 3:
 
         for _ in range(3):
-
             random_number = random.randint(0, len(products) - 1)
 
             random_products.append(products.pop(random_number))
+
     else:
 
         random_products = products

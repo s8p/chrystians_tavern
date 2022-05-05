@@ -1,7 +1,3 @@
-class ProductNotFound(Exception):
-    ...
-
-
 class WrongKeys(Exception):
     ...
 

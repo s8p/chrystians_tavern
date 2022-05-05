@@ -26,13 +26,10 @@ class ClientsModel(db.Model):
 
     @validates("cpf")
     def validate_cpf(self, key, cpf):
+        cpf = str(cpf)
+
         cpf = cpf.replace(".", "")
         cpf = cpf.replace("-", "")
-
-        print("teste aqui dentro oia")
-        print(f"{cpf.isnumeric()=}")
-        print(f"{len(cpf)=}")
-        print(f"{cpf}")
 
         if cpf.isnumeric() == False or len(cpf) != 11:
             raise CpfInvalid
