@@ -3,7 +3,12 @@ from flask import jsonify, request
 
 from app.models.boxes_model import BoxesModel
 from app.configs.database import db
-from app.services.boxes_services import check_box, verify_data, random_products, check_data
+from app.services.boxes_services import (
+    check_box,
+    verify_data,
+    random_products,
+    check_data,
+)
 from app.exceptions.box_exc import BoxNotFound, WrongKeys, InvalidValues
 
 from sqlalchemy.orm.session import Session
