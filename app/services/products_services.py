@@ -10,16 +10,13 @@ def verify_data(data: dict):
     price_key = data["price"]
 
     if price_key <= 25000:
-        data["flag"] = "bronze"
-        # bronze
+        data["flag"] = "Bronze"
 
     elif price_key > 25000 and price_key <= 50000:
-        data["flag"] = "silver"
-        # silver
+        data["flag"] = "Silver"
 
     elif price_key > 50000:
-        data["flag"] = "gold"
-    # gold
+        data["flag"] = "Gold"
 
     default_keys = set(["name", "price", "category", "available_amount"])
 
