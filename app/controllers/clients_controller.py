@@ -10,7 +10,8 @@ from app.exceptions.client_exc import (
     ProductNotFound,
     UnavailableProduct,
     WrongKeys,
-    UndefinedQuantity
+    UndefinedQuantity,
+    InvalidValues
 )
 
 
@@ -24,6 +25,7 @@ from app.services.clients_services import (
     register_client_order,
     checking_duplicate,
     packing_products,
+    verify_data
 )
 
 
@@ -64,9 +66,7 @@ def create_client():
             raise i.orig
 
     except WrongKeys:
-        return {
-            "error": "Confira as chaves usadas. Chaves esperadas: ['cpf', 'name', 'email', 'box_flag', 'total_points']"
-        }, HTTPStatus.BAD_REQUEST
+        return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
 
     return jsonify(client), HTTPStatus.CREATED
 
@@ -91,8 +91,11 @@ def delete_client(client_id):
 
 
 def create_checkout(client_id: int):
+    print('-'*100)
     try:
         data = request.get_json()
+
+        data = verify_data(data)
 
         client = checking_id(client_id)
 
@@ -121,6 +124,7 @@ def create_checkout(client_id: int):
             'date': order.date
         }
 
+        print('-'*100)
         return checkout, HTTPStatus.OK
 
     except UnavailableProduct:
@@ -141,3 +145,9 @@ def create_checkout(client_id: int):
     
     except UndefinedQuantity:
         return {"error": "A quantidade deve ser um valor inteiro e maior que zero"}, HTTPStatus.BAD_REQUEST
+
+    except WrongKeys:
+        return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
+    
+    except InvalidValues:
+        return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST

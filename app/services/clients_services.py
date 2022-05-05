@@ -4,7 +4,9 @@ from sqlalchemy.orm.session import Session
 from app.exceptions.client_exc import (
     DuplicateProduct,
     ClientNotFound,
+    InvalidValues,
     ProductNotFound,
+    UndefinedQuantity,
     WrongKeys,
     UnavailableProduct,
 )
@@ -32,6 +34,45 @@ def checking_keys(data: dict):
         raise WrongKeys
 
     return data
+
+
+
+def verify_data(data: dict):
+    data_keys = set(data.keys())
+    default_keys = set(['products'])
+
+    if data_keys != default_keys:
+        raise WrongKeys
+
+
+    if type(data['products']) != list:
+        raise InvalidValues
+
+    for product in data['products']:
+        if type(product) != dict:
+            raise WrongKeys
+        
+        product_default_keys = set(['product_id', 'quantity'])
+        product_keys =set(product.keys()) 
+
+
+        if product_keys != product_default_keys:
+            raise WrongKeys
+
+        for key in list(product.keys()):
+
+            if type(product[key]) != int:
+                raise InvalidValues
+            
+            if key == 'quantity':
+                if product[key] <= 0:
+                    raise UndefinedQuantity
+            
+
+
+
+    return data
+
 
 
 def checking_id(id: int):
@@ -136,3 +177,4 @@ def register_client_order(client_id: int, order_id: int):
 
     session.add(client_order)
     session.commit()
+
