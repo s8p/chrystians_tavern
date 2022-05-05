@@ -63,7 +63,15 @@ def populate_cli():
             )
             for flag, price in flags.items()
         ]
-        session.add_all(boxes)
-        session.commit()
+        try:
+            session.add_all(boxes)
+            session.commit()
+        except IntegrityError:
+            print(
+                "Tabela `boxes` já está populada, para remover os valores utilize o comando abaixo:"
+            )
+            print(
+                f"\npsql -d {os.getenv('DATABASE_URI').split('/')[-1]} -c 'DELETE FROM {BoxesModel.__tablename__};'"
+            )
 
     return user_group
