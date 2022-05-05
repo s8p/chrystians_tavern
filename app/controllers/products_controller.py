@@ -6,8 +6,6 @@ from app.services.products_services import (
     verify_product,
     check_category,
     verify_data,
- 
-    
 )
 
 from sqlalchemy.exc import IntegrityError
@@ -114,4 +112,4 @@ def delete_product(product_id: int):
         session.commit()
     except ProductNotFound:
         return {"error": f"Produto {product_id} não encontrado"}, HTTPStatus.NOT_FOUND
-    return "", HTTPStatus.NO_CONTENT 
+    return "", HTTPStatus.NO_CONTENT
