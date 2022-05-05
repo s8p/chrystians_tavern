@@ -77,8 +77,6 @@ def client_by_id():
 
 def update_client(client_id: int):
     ...
-    
-    
 
 
 def delete_client():
@@ -109,11 +107,11 @@ def create_checkout(client_id: int):
         register_client_order(client_id, order.id)
 
         checkout = {
-            'id': order.id,
-            'client_cpf': client.cpf,
-            'products': buying_products,
-            'total_price': order.price,
-            'date': order.date
+            "id": order.id,
+            "client_cpf": client.cpf,
+            "products": buying_products,
+            "total_price": order.price,
+            "date": order.date,
         }
 
         return checkout, HTTPStatus.OK
@@ -133,6 +131,8 @@ def create_checkout(client_id: int):
 
     except ProductNotFound:
         return {"error": "Produto pedido não encontrado"}, HTTPStatus.NOT_FOUND
-    
+
     except UndefinedQuantity:
-        return {"error": "A quantidade deve ser um valor inteiro e maior que zero"}, HTTPStatus.BAD_REQUEST
+        return {
+            "error": "A quantidade deve ser um valor inteiro e maior que zero"
+        }, HTTPStatus.BAD_REQUEST

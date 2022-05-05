@@ -89,8 +89,8 @@ def check_available_amount(products: list):
 
         if product["available_amount"] < product["quantity"]:
             raise UnavailableProduct
-        
-        if product['quantity'] <= 0 or type(product['quantity']) != int:
+
+        if product["quantity"] <= 0 or type(product["quantity"]) != int:
             raise UndefinedQuantity
 
 
