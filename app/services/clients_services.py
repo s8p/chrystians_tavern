@@ -144,28 +144,26 @@ def calculate_price(products: list):
 
     return total_price
 
+
 def update_points(client: ClientsModel, price: int):
     session: Session = db.session
-    
+
     points = price / 100
 
-
-    if client.box_flag == 'Gold':
+    if client.box_flag == "Gold":
         client_points = client.total_points + (points * 0.17)
         client_points = ceil(client_points)
 
-    elif client.box_flag == 'Silver':
+    elif client.box_flag == "Silver":
         client_points = client.total_points + (points * 0.1)
         client_points = ceil(client_points)
-    
-    elif client.box_flag == 'Bronze':
+
+    elif client.box_flag == "Bronze":
         client_points = client.total_points + (points * 0.05)
         client_points = ceil(client_points)
 
-
-    setattr(client, 'total_points', client_points)
+    setattr(client, "total_points", client_points)
     session.commit()
-
 
     return client
 

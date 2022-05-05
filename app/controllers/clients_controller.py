@@ -27,7 +27,7 @@ from app.services.clients_services import (
     packing_products,
     update_data,
     verify_data,
-    update_points
+    update_points,
 )
 
 
@@ -75,7 +75,6 @@ def create_client():
         return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
 
     return jsonify(client), HTTPStatus.CREATED
-
 
 
 def update_client(client_id: int):
