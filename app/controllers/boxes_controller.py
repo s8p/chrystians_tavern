@@ -1,80 +1,85 @@
 from http import HTTPStatus
-from random import random
 from flask import jsonify, request
-from app.models.boxes_model import BoxesModel
-from app.models.products_model import ProductModel
-from app.configs.database import db
-from app.services import boxes_services
-from sqlalchemy.orm import Query
-from flask_sqlalchemy import BaseQuery
-from werkzeug.exceptions import NotFound
-from sqlalchemy.orm.session import Session
-import locale
 
-# locale.setlocale(locale.LC_ALL, "Portuguese_Brazil.1252")
+from app.models.boxes_model import BoxesModel
+from app.configs.database import db
+from app.services.boxes_services import check_box, verify_data, random_products, check_data
+from app.exceptions.product_exc import BoxNotFound, WrongKeys, InvalidValues
+
+from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import IntegrityError
+from psycopg2.errors import UniqueViolation
+
 
 
 def create_box():
-    data = request.get_json()
+    try: 
+        data = request.get_json()
+        data = verify_data(data)
 
-    box = BoxesModel(**data)
+        box = BoxesModel(**data)
 
-    session: Session = db.session()
+        session: Session = db.session()
 
-    session.add(box)
-    session.commit()
-    return jsonify(box), HTTPStatus.CREATED
+        session.add(box)
+        session.commit()
+        
+        return jsonify(box), HTTPStatus.CREATED
+
+    except IntegrityError as i:
+
+        if isinstance(i.orig, UniqueViolation):
+            return {"error": "Box já registrada!"}, HTTPStatus.CONFLICT
+
+        else:
+            raise i.orig
+    
+    except WrongKeys:
+        return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
+    
+    except InvalidValues:
+        return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST
+
+    
 
 
 def retrieve_boxes():
     session: Session = db.session
+
     boxes = session.query(BoxesModel).all()
-    adapted_boxes = []
-    for boxe in boxes:
-        adapted_box = dict(**boxe.__dict__)
-        adapted_box.pop("_sa_instance_state")
-        adapted_box.update({"monthly_price": locale.currency(boxe.monthly_price)})
-        adapted_boxes.append(adapted_box)
-    return jsonify(adapted_boxes), HTTPStatus.OK
+    
+    return jsonify(boxes), HTTPStatus.OK
 
 
 def retrieve_box_flag(box_flag: str):
-    base_query: Query = db.session.query(BoxesModel)
-    box_query: BaseQuery = base_query.filter_by(flag=box_flag)
     try:
-        box = box_query.first_or_404(description="flag not found")
-        products = db.session.query(ProductModel).filter_by(flag=box_flag).all()
-        random_products = []
-        if len(products) > 3:
-            for _ in range(3):
-                random_number = round(random.random() * (len(products) - 1))
-                random_products.append(products.pop(random_number))
-        else:
-            random_products = products
-        setattr(box, "sorted_products", random_products)
-        return jsonify(box), HTTPStatus.OK
-    except NotFound as e:
-        return {"error": e.description}, HTTPStatus.NOT_FOUND
+    
+        box_flag = box_flag.capitalize()
+
+        box = check_box(box_flag)
+
+        products = random_products(box_flag)
+
+        box = {key: value for key, value in box.__dict__.items() if key != '_sa_instance_state'}
+        
+        box['month_products'] = products
+
+        return box, HTTPStatus.OK
+    
+    except BoxNotFound :
+        return {"error": 'Box não encontrada'}, HTTPStatus.NOT_FOUND
 
 
 def update_box(box_flag: str):
     data = request.get_json()
 
-    check = ["name", "description", "monthly_price"]
-    data_keys = data.keys()
-
-    extra_keys = [key for key in data_keys if key not in check]
-
-    if len(extra_keys) > 0:
-        return {
-            "error": "Invalid keys",
-            "invalid_keys": extra_keys,
-        }, HTTPStatus.BAD_REQUEST
+    data = check_data(data)
 
     session: Session = db.session
 
     try:
-        box = session.query(BoxesModel).get(box_flag)
+        box = check_box(box_flag)
+
         for key, value in data.items():
             setattr(box, key, value)
 
@@ -82,20 +87,25 @@ def update_box(box_flag: str):
 
         return jsonify(box), HTTPStatus.OK
 
-    except NotFound as e:
-        return {"error": e.description}, HTTPStatus.NOT_FOUND
+    except BoxNotFound :
+        return {"error": 'Box não encontrada'}, HTTPStatus.NOT_FOUND
+    
+    except WrongKeys:
+        return {'error': 'Chaves Inválidas'}, HTTPStatus.BAD_REQUEST
 
 
 def delete_box(box_flag: str):
-    session: Session = db.session
+    # session: Session = db.session
 
-    try:
+    # try:
 
-        box = session.query(BoxesModel).get(box_flag)
-        session.delete(box)
-        session.commit()
+    #     box = session.query(BoxesModel).get(box_flag)
+    #     session.delete(box)
+    #     session.commit()
 
-        return "", HTTPStatus.NO_CONTENT
+    #     return "", HTTPStatus.NO_CONTENT
 
-    except NotFound as e:
-        return {"error": e.description}, HTTPStatus.NOT_FOUND
+    # except BoxNotFound :
+    #     return {"error": 'Box não encontrada'}, HTTPStatus.NOT_FOUND
+
+    return {'loading': 'Rota em desenvolvimento'}, HTTPStatus.NOT_IMPLEMENTED
