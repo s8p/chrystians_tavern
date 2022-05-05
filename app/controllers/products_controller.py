@@ -20,6 +20,7 @@ def create_product():
     data = request.get_json()
 
     try:
+        data["name"].title()
         data = verify_data(data)
         check_category(data)
 
