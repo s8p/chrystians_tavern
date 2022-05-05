@@ -6,6 +6,7 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import ForeignKeyViolation, UniqueViolation
 import click
+from app.models.boxes_model import BoxesModel
 
 from app.models.clients_model import ClientsModel
 from app.configs.database import db
@@ -13,12 +14,12 @@ from app.configs.database import db
 
 def populate_cli():
     fake = Faker("pt_BR")
+    session: Session = db.session
     user_group = AppGroup("populate", help="Populates database")
 
     @user_group.command("clients")
     @click.argument("amount", type=int)
     def create_users(amount):
-        session: Session = db.session
         clients = list()
         emails_used = list()
         cpf_used = list()
@@ -52,5 +53,17 @@ def populate_cli():
                 )
             else:
                 raise e.orig
+
+    @user_group.command("boxes")
+    def create_boxes():
+        flags = {"Gold": 99999, "Silver": 49999, "Bronze": 24999}
+        boxes = [
+            BoxesModel(
+                flag=flag, name=flag, description=fake.text(), monthly_price=price
+            )
+            for flag, price in flags.items()
+        ]
+        session.add_all(boxes)
+        session.commit()
 
     return user_group
