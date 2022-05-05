@@ -10,6 +10,7 @@ from app.exceptions.client_exc import (
     ProductNotFound,
     UnavailableProduct,
     WrongKeys,
+    UndefinedQuantity
 )
 
 
@@ -91,7 +92,6 @@ def delete_client(client_id):
 
 def create_checkout(client_id: int):
     try:
-
         data = request.get_json()
 
         client = checking_id(client_id)
@@ -113,7 +113,15 @@ def create_checkout(client_id: int):
         register_products_order(buying_products, order.id)
         register_client_order(client_id, order.id)
 
-        return jsonify(client), HTTPStatus.OK
+        checkout = {
+            'id': order.id,
+            'client_cpf': client.cpf,
+            'products': buying_products,
+            'total_price': order.price,
+            'date': order.date
+        }
+
+        return checkout, HTTPStatus.OK
 
     except UnavailableProduct:
         return {
@@ -130,3 +138,6 @@ def create_checkout(client_id: int):
 
     except ProductNotFound:
         return {"error": "Produto pedido não encontrado"}, HTTPStatus.NOT_FOUND
+    
+    except UndefinedQuantity:
+        return {"error": "A quantidade deve ser um valor inteiro e maior que zero"}, HTTPStatus.BAD_REQUEST
