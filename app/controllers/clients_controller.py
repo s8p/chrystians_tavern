@@ -25,6 +25,7 @@ from app.services.clients_services import (
     register_client_order,
     checking_duplicate,
     packing_products,
+    update_data,
     verify_data
 )
 
@@ -75,9 +76,33 @@ def client_by_id():
     ...
 
 
-def update_client():
-    ...
+def update_client(client_id: int):
+    try:
+        data = request.get_json()
 
+        data = update_data(data)
+
+        client = checking_id(client_id)
+
+        session: Session = db.session
+
+        for key, value in data.items():
+
+            setattr(client, key, value)
+            session.commit()
+
+        return jsonify(client), HTTPStatus.OK
+
+    except WrongKeys:
+        return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
+    
+    except InvalidValues:
+        return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST
+    
+    except ClientNotFound:
+        return {"error": "Cliente não encontrado"}, HTTPStatus.NOT_FOUND
+
+    
 
 def delete_client(client_id):
     session: Session = db.session
@@ -91,7 +116,6 @@ def delete_client(client_id):
 
 
 def create_checkout(client_id: int):
-    print('-'*100)
     try:
         data = request.get_json()
 
@@ -124,7 +148,6 @@ def create_checkout(client_id: int):
             'date': order.date
         }
 
-        print('-'*100)
         return checkout, HTTPStatus.OK
 
     except UnavailableProduct:

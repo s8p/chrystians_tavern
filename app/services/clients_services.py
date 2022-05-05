@@ -178,3 +178,32 @@ def register_client_order(client_id: int, order_id: int):
     session.add(client_order)
     session.commit()
 
+
+def update_data(data: dict):
+    data_keys = list(data.keys())
+
+    default_keys = ['name', 'total_points', 'box_flag', 'email', 'cpf']
+
+
+    for key in data_keys:
+        if key not in default_keys:
+            raise WrongKeys
+
+        if key == 'name' or key == 'email':
+            if type(data[key]) != str:
+                raise InvalidValues
+            
+            if key == 'name':
+                data[key] = data[key].title()
+        
+        if key == 'box_flag':
+            if data[key] != None and type(data[key]) != str:
+                raise InvalidValues
+
+            data[key] = data[key].capitalize()
+
+        if key == 'cpf':
+            if type(data[key]) != str and type(data[key]) != int:
+                raise InvalidValues
+
+    return data
