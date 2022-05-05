@@ -67,9 +67,6 @@ def verify_data(data: dict):
             if key == 'quantity':
                 if product[key] <= 0:
                     raise UndefinedQuantity
-            
-
-
 
     return data
 
@@ -200,7 +197,8 @@ def update_data(data: dict):
             if data[key] != None and type(data[key]) != str:
                 raise InvalidValues
 
-            data[key] = data[key].capitalize()
+            if type(data[key]) == str:
+                data[key] = data[key].capitalize()
 
         if key == 'cpf':
             if type(data[key]) != str and type(data[key]) != int:
