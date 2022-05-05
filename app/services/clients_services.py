@@ -36,25 +36,22 @@ def checking_keys(data: dict):
     return data
 
 
-
 def verify_data(data: dict):
     data_keys = set(data.keys())
-    default_keys = set(['products'])
+    default_keys = set(["products"])
 
     if data_keys != default_keys:
         raise WrongKeys
 
-
-    if type(data['products']) != list:
+    if type(data["products"]) != list:
         raise InvalidValues
 
-    for product in data['products']:
+    for product in data["products"]:
         if type(product) != dict:
             raise WrongKeys
-        
-        product_default_keys = set(['product_id', 'quantity'])
-        product_keys =set(product.keys()) 
 
+        product_default_keys = set(["product_id", "quantity"])
+        product_keys = set(product.keys())
 
         if product_keys != product_default_keys:
             raise WrongKeys
@@ -63,13 +60,12 @@ def verify_data(data: dict):
 
             if type(product[key]) != int:
                 raise InvalidValues
-            
-            if key == 'quantity':
+
+            if key == "quantity":
                 if product[key] <= 0:
                     raise UndefinedQuantity
 
     return data
-
 
 
 def checking_id(id: int):
@@ -179,28 +175,27 @@ def register_client_order(client_id: int, order_id: int):
 def update_data(data: dict):
     data_keys = list(data.keys())
 
-    default_keys = ['name', 'total_points', 'box_flag', 'email', 'cpf']
-
+    default_keys = ["name", "total_points", "box_flag", "email", "cpf"]
 
     for key in data_keys:
         if key not in default_keys:
             raise WrongKeys
 
-        if key == 'name' or key == 'email':
+        if key == "name" or key == "email":
             if type(data[key]) != str:
                 raise InvalidValues
-            
-            if key == 'name':
+
+            if key == "name":
                 data[key] = data[key].title()
-        
-        if key == 'box_flag':
+
+        if key == "box_flag":
             if data[key] != None and type(data[key]) != str:
                 raise InvalidValues
 
             if type(data[key]) == str:
                 data[key] = data[key].capitalize()
 
-        if key == 'cpf':
+        if key == "cpf":
             if type(data[key]) != str and type(data[key]) != int:
                 raise InvalidValues
 
