@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import jsonify, request
-from psycopg2.errors import UniqueViolation
+from psycopg2.errors import ForeignKeyViolation, UniqueViolation
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
 from app.exceptions.client_exc import (
@@ -59,6 +59,10 @@ def create_client():
         if isinstance(i.orig, UniqueViolation):
             return {"error": "Cliente já registrado!"}, HTTPStatus.CONFLICT
 
+        if isinstance(i.orig, ForeignKeyViolation):
+            return {
+                "error": "`box_flag` não encontrada!"
+            }, HTTPStatus.UNPROCESSABLE_ENTITY
         else:
             raise i.orig
 
