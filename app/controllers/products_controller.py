@@ -1,11 +1,13 @@
 from http import HTTPStatus
 from flask import jsonify, current_app, request
-from app.models import ProductModel
+from app.models import ProductModel, ProductOrderModel
 from app.services.products_services import (
     check_keys,
     verify_product,
     check_category,
     verify_data,
+ 
+    
 )
 
 from sqlalchemy.exc import IntegrityError
@@ -100,10 +102,16 @@ def update_product(product_id: int):
 
 
 def delete_product(product_id: int):
+    session: Session = db.session
+    all_product_order = session.query(ProductOrderModel).all()
+    if all_product_order:
+        for product_order in all_product_order:
+            session.delete(product_order)
+            session.commit()
     try:
         produto = verify_product(product_id)
-        current_app.db.session.delete(produto)
-        current_app.db.session.commit()
+        session.delete(produto)
+        session.commit()
     except ProductNotFound:
-        return {"error": f"Product {product_id} not found"}, HTTPStatus.NOT_FOUND
-    return "", HTTPStatus.NO_CONTENT
+        return {"error": f"Produto {product_id} não encontrado"}, HTTPStatus.NOT_FOUND
+    return "", HTTPStatus.NO_CONTENT 

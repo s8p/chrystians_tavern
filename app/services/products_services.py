@@ -1,5 +1,6 @@
+from itertools import product
 from app.configs.database import db
-from app.models import ProductModel, CategoriesModel
+from app.models import ProductModel, CategoriesModel, ProductOrderModel
 from app.exceptions.product_exc import ProductNotFound, InvalidValues, WrongKeys
 
 from sqlalchemy.orm.session import Session
