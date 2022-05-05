@@ -5,6 +5,7 @@ from app.exceptions.client_exc import (
     DuplicateProduct,
     ClientNotFound,
     ProductNotFound,
+    UndefinedQuantity,
     WrongKeys,
     UnavailableProduct,
 )
@@ -88,6 +89,9 @@ def check_available_amount(products: list):
 
         if product["available_amount"] < product["quantity"]:
             raise UnavailableProduct
+        
+        if product['quantity'] <= 0 or type(product['quantity']) != int:
+            raise UndefinedQuantity
 
 
 def calculate_price(products: list):

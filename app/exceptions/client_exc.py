@@ -20,3 +20,11 @@ class DuplicateProduct(Exception):
 
 class ProductNotFound(Exception):
     ...
+
+
+class InvalidValues(Exception):
+    ...
+
+
+class UndefinedQuantity(Exception):
+    ...
