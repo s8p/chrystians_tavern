@@ -11,9 +11,8 @@ from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 
 
-
 def create_box():
-    try: 
+    try:
         data = request.get_json()
         data = verify_data(data)
 
@@ -23,7 +22,7 @@ def create_box():
 
         session.add(box)
         session.commit()
-        
+
         return jsonify(box), HTTPStatus.CREATED
 
     except IntegrityError as i:
@@ -33,41 +32,43 @@ def create_box():
 
         else:
             raise i.orig
-    
+
     except WrongKeys:
         return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
-    
+
     except InvalidValues:
         return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST
-
-    
 
 
 def retrieve_boxes():
     session: Session = db.session
 
     boxes = session.query(BoxesModel).all()
-    
+
     return jsonify(boxes), HTTPStatus.OK
 
 
 def retrieve_box_flag(box_flag: str):
     try:
-    
+
         box_flag = box_flag.capitalize()
 
         box = check_box(box_flag)
 
         products = random_products(box_flag)
 
-        box = {key: value for key, value in box.__dict__.items() if key != '_sa_instance_state'}
-        
-        box['month_products'] = products
+        box = {
+            key: value
+            for key, value in box.__dict__.items()
+            if key != "_sa_instance_state"
+        }
+
+        box["month_products"] = products
 
         return box, HTTPStatus.OK
-    
-    except BoxNotFound :
-        return {"error": 'Box não encontrada'}, HTTPStatus.NOT_FOUND
+
+    except BoxNotFound:
+        return {"error": "Box não encontrada"}, HTTPStatus.NOT_FOUND
 
 
 def update_box(box_flag: str):
@@ -87,11 +88,11 @@ def update_box(box_flag: str):
 
         return jsonify(box), HTTPStatus.OK
 
-    except BoxNotFound :
-        return {"error": 'Box não encontrada'}, HTTPStatus.NOT_FOUND
-    
+    except BoxNotFound:
+        return {"error": "Box não encontrada"}, HTTPStatus.NOT_FOUND
+
     except WrongKeys:
-        return {'error': 'Chaves Inválidas'}, HTTPStatus.BAD_REQUEST
+        return {"error": "Chaves Inválidas"}, HTTPStatus.BAD_REQUEST
 
 
 def delete_box(box_flag: str):
@@ -108,4 +109,4 @@ def delete_box(box_flag: str):
     # except BoxNotFound :
     #     return {"error": 'Box não encontrada'}, HTTPStatus.NOT_FOUND
 
-    return {'loading': 'Rota em desenvolvimento'}, HTTPStatus.NOT_IMPLEMENTED
+    return {"loading": "Rota em desenvolvimento"}, HTTPStatus.NOT_IMPLEMENTED
