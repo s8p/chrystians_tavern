@@ -1,4 +1,4 @@
-from flask import request, session
+from math import ceil
 from sqlalchemy.orm.session import Session
 
 from app.exceptions.client_exc import (
@@ -143,6 +143,31 @@ def calculate_price(products: list):
         total_price += product["price"] * product["quantity"]
 
     return total_price
+
+def update_points(client: ClientsModel, price: int):
+    session: Session = db.session
+    
+    points = price / 100
+
+
+    if client.box_flag == 'Gold':
+        client_points = client.total_points + (points * 0.17)
+        client_points = ceil(client_points)
+
+    elif client.box_flag == 'Silver':
+        client_points = client.total_points + (points * 0.1)
+        client_points = ceil(client_points)
+    
+    elif client.box_flag == 'Bronze':
+        client_points = client.total_points + (points * 0.05)
+        client_points = ceil(client_points)
+
+
+    setattr(client, 'total_points', client_points)
+    session.commit()
+
+
+    return client
 
 
 def register_products_order(products: list, order_id: int):

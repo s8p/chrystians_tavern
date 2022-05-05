@@ -15,7 +15,7 @@ from app.exceptions.client_exc import (
 )
 
 
-from app.models import ClientsModel, ProductModel, OrderModel
+from app.models import ClientsModel, OrderModel
 from app.configs.database import db
 from app.services.clients_services import (
     checking_id,
@@ -27,6 +27,7 @@ from app.services.clients_services import (
     packing_products,
     update_data,
     verify_data,
+    update_points
 )
 
 
@@ -75,9 +76,6 @@ def create_client():
 
     return jsonify(client), HTTPStatus.CREATED
 
-
-def client_by_id():
-    ...
 
 
 def update_client(client_id: int):
@@ -133,6 +131,8 @@ def create_checkout(client_id: int):
         buying_products = checking_duplicate(all_buying_products)
 
         total_price = calculate_price(buying_products)
+
+        client = update_points(client, total_price)
 
         order_data = {"price": total_price}
         order = OrderModel(**order_data)
