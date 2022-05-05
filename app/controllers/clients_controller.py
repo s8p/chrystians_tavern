@@ -11,7 +11,7 @@ from app.exceptions.client_exc import (
     UnavailableProduct,
     WrongKeys,
     UndefinedQuantity,
-    InvalidValues
+    InvalidValues,
 )
 
 
@@ -26,7 +26,7 @@ from app.services.clients_services import (
     checking_duplicate,
     packing_products,
     update_data,
-    verify_data
+    verify_data,
 )
 
 
@@ -95,14 +95,13 @@ def update_client(client_id: int):
 
     except WrongKeys:
         return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
-    
+
     except InvalidValues:
         return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST
-    
+
     except ClientNotFound:
         return {"error": "Cliente não encontrado"}, HTTPStatus.NOT_FOUND
 
-    
 
 def delete_client(client_id):
     session: Session = db.session
@@ -141,11 +140,11 @@ def create_checkout(client_id: int):
         register_client_order(client_id, order.id)
 
         checkout = {
-            'id': order.id,
-            'client_cpf': client.cpf,
-            'products': buying_products,
-            'total_price': order.price,
-            'date': order.date
+            "id": order.id,
+            "client_cpf": client.cpf,
+            "products": buying_products,
+            "total_price": order.price,
+            "date": order.date,
         }
 
         return checkout, HTTPStatus.OK
@@ -165,12 +164,14 @@ def create_checkout(client_id: int):
 
     except ProductNotFound:
         return {"error": "Produto pedido não encontrado"}, HTTPStatus.NOT_FOUND
-    
+
     except UndefinedQuantity:
-        return {"error": "A quantidade deve ser um valor inteiro e maior que zero"}, HTTPStatus.BAD_REQUEST
+        return {
+            "error": "A quantidade deve ser um valor inteiro e maior que zero"
+        }, HTTPStatus.BAD_REQUEST
 
     except WrongKeys:
         return {"error": "Chaves erradas"}, HTTPStatus.BAD_REQUEST
-    
+
     except InvalidValues:
         return {"error": "Formato de valor inválido"}, HTTPStatus.BAD_REQUEST
