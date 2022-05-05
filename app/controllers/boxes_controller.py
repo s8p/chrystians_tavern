@@ -79,7 +79,6 @@ def retrieve_box_flag(box_flag: str):
 def update_box(box_flag: str):
     data = request.get_json()
 
-
     session: Session = db.session
 
     try:
