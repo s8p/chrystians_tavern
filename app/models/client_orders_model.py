@@ -14,4 +14,4 @@ class ClientOrderModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
-    client_id = Column(Integer, ForeignKey("clients.id"))
+    client_id = Column(Integer, ForeignKey("clients.id", ondelete="CASCADE"))
