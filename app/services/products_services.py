@@ -34,6 +34,8 @@ def verify_data(data: dict):
     if type(data["price"]) != int or type(data["available_amount"]) != int:
         raise InvalidValues
 
+    data['name'] = data['name'].title()
+
     return data
 
 
