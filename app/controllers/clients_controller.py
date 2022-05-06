@@ -50,6 +50,7 @@ def create_client():
     data = request.get_json()
 
     try:
+        data["name"].title()
         data = checking_keys(data)
 
         client = ClientsModel(**data)
