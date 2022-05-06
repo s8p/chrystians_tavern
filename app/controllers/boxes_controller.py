@@ -79,11 +79,10 @@ def retrieve_box_flag(box_flag: str):
 def update_box(box_flag: str):
     data = request.get_json()
 
-    data = check_data(data)
-
     session: Session = db.session
 
     try:
+        data = check_data(data)
         box = check_box(box_flag)
 
         for key, value in data.items():

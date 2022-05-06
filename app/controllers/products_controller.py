@@ -101,10 +101,11 @@ def update_product(product_id: int):
 
 
 def delete_product(product_id: int):
+    session: Session = db.session
     try:
         produto = verify_product(product_id)
-        current_app.db.session.delete(produto)
-        current_app.db.session.commit()
+        session.delete(produto)
+        session.commit()
+        return "", HTTPStatus.NO_CONTENT
     except ProductNotFound:
         return {"error": f"Product {product_id} not found"}, HTTPStatus.NOT_FOUND
-    return "", HTTPStatus.NO_CONTENT

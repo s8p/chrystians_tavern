@@ -17,6 +17,6 @@ class ProductOrderModel(db.Model):
     __tablename__ = "product_orders"
 
     id = Column(Integer, primary_key=True)
-    product_id = Column(Integer, ForeignKey("products.id"))
+    product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"))
     order_id = Column(Integer, ForeignKey("orders.id"))
     amount = Column(Integer, default=1)
